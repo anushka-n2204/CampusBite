@@ -18,7 +18,10 @@ function cleanSupabaseUrl(raw: string): string {
  */
 export function getSupabase(): SupabaseClient {
   if (!client) {
-    client = createClient(cleanSupabaseUrl(requireEnv("SUPABASE_URL")), requireEnv("SUPABASE_SECRET_KEY"), {
+    const secretKey =
+      process.env.SUPABASE_SERVICE_ROLE_KEY?.trim() ||
+      requireEnv("SUPABASE_SECRET_KEY");
+    client = createClient(cleanSupabaseUrl(requireEnv("SUPABASE_URL")), secretKey, {
       auth: { persistSession: false, autoRefreshToken: false },
     });
   }

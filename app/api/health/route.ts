@@ -10,8 +10,11 @@ export const runtime = "nodejs";
  */
 export async function GET() {
   // GEMINI_MODEL is optional (it has a default), so it is not checked here.
-  const names = ["GEMINI_API_KEY", "SUPABASE_URL", "SUPABASE_SECRET_KEY", "APP_PASSCODE"];
+  const names = ["GEMINI_API_KEY", "SUPABASE_URL", "APP_PASSCODE"];
   const settings = Object.fromEntries(names.map((n) => [n, Boolean(process.env[n]?.trim())]));
+  settings.SUPABASE_SECRET_KEY = Boolean(
+    (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY)?.trim()
+  );
 
   // The project id is the first part of the Supabase URL. It is not a secret.
   let supabaseProject: string | null = null;
