@@ -34,8 +34,17 @@ async function handleSetup(request: Request) {
     );
   }
 
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+  let cleanConnectionString = connectionString;
+  try {
+    const parsedUrl = new URL(connectionString);
+    parsedUrl.searchParams.delete("sslmode");
+    cleanConnectionString = parsedUrl.toString();
+  } catch {}
+
   const client = new Client({
-    connectionString,
+    connectionString: cleanConnectionString,
     ssl: { rejectUnauthorized: false },
   });
 
